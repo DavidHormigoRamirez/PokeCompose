@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class PokemonInMemoryRepository @Inject constructor(): PokemonRepository {
 
-    val pokemonList: List<Pokemon> = listOf(
+    private val pokemonList: List<Pokemon> = listOf(
         Pokemon(
             id = 1,
             name = "Bulbasaur",
