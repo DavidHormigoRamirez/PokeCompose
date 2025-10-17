@@ -2,8 +2,9 @@ package com.turingalan.pokemon.data.repository
 
 import com.turingalan.pokemon.R
 import com.turingalan.pokemon.data.model.Pokemon
+import javax.inject.Inject
 
-class PokemonInMemoryRepository(): PokemonRepository {
+class PokemonInMemoryRepository @Inject constructor(): PokemonRepository {
 
     val pokemonList: List<Pokemon> = listOf(
         Pokemon(
