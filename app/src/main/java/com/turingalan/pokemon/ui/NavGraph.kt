@@ -2,6 +2,7 @@ package com.turingalan.pokemon.ui
 
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.turingalan.pokemon.R
 import com.turingalan.pokemon.ui.detail.PokemonDetailScreen
@@ -23,6 +25,7 @@ import com.turingalan.pokemon.ui.list.PokemonListScreen
 fun NavGraph() {
     val navController = rememberNavController()
     val startDestination = Route.List
+    //val currentBackStackEntry = navController.currentBackStackEntryAsState()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -42,16 +45,21 @@ fun NavGraph() {
             )
         {
             composable<Route.List> {
-                PokemonListScreen(modifier = contentModifier)
+                PokemonListScreen(
+                    modifier = contentModifier,
+                    onClick = {
+                        id ->
+                            navController.navigate(Route.Detail(id))
+                    }
+                )
 
             }
 
             composable<Route.Detail> {
                 // TODO coger los valoresxº
+                backstackEntry ->
                 PokemonDetailScreen(
-                    modifier = contentModifier,
-                    name = "NAME",
-                    artworkId = 1
+                    modifier = contentModifier.consumeWindowInsets(innerPadding).padding(innerPadding).fillMaxWidth(),
                 )
 
             }
