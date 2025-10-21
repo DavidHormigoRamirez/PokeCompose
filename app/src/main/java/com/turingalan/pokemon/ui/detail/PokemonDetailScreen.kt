@@ -5,29 +5,49 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.turingalan.pokemon.R
 
 
 @Composable
 fun PokemonDetailScreen(
     modifier: Modifier = Modifier,
+    viewModel: PokemonDetailViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    PokemonDetailScreen(
+        modifier = modifier,
+        name = uiState.name,
+        artworkId =  uiState.artworkId,
+    )
+
+
+}
+
+@Composable
+fun PokemonDetailScreen(
+    modifier: Modifier = Modifier,
     name: String,
-    artworkId: Int,
+    artworkId: Int?,
     )
 {
-    Column(modifier = Modifier.fillMaxSize(),
+    Column(modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally) {
+        if (artworkId != null)  {
        Image(
            painterResource(artworkId),
            contentDescription = name,
            contentScale = ContentScale.Crop,
 
        )
+        }
     }
 
 }

@@ -7,5 +7,5 @@ sealed class Route(val route:String) {
     @Serializable
     data object List:Route("pokemon_list")
     @Serializable
-    data class Detail(val id:Int):Route(route = "pokemon_detail[$id]")
+    data class Detail(val id:Long):Route(route = "pokemon_detail[$id]")
 }
