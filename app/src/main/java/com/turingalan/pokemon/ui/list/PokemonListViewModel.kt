@@ -2,6 +2,7 @@ package com.turingalan.pokemon.ui.list
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+
 import androidx.lifecycle.viewModelScope
 import com.turingalan.pokemon.data.model.Pokemon
 import com.turingalan.pokemon.data.repository.PokemonRepository
@@ -10,6 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+
+
 import javax.inject.Inject
 
 
@@ -18,6 +21,7 @@ class PokemonListViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val repository: PokemonRepository
 ): ViewModel() {
+
 
     private val _uiState: MutableStateFlow<ListUiState > =
         MutableStateFlow(value = ListUiState.Initial)

@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
+
 @Composable
 fun PokemonListScreen(
     modifier: Modifier = Modifier,
@@ -98,6 +100,7 @@ private fun PokemonList(
 
 @Composable
 fun PokemonListItemCard(
+
     modifier:Modifier = Modifier,
     pokemonId: Long,
     name:String,

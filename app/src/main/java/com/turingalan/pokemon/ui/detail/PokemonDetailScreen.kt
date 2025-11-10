@@ -13,6 +13,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.turingalan.pokemon.R
 
 
@@ -21,7 +22,7 @@ fun PokemonDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: PokemonDetailViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     PokemonDetailScreen(
         modifier = modifier,
         name = uiState.name,
@@ -38,7 +39,9 @@ fun PokemonDetailScreen(
     artworkId: Int?,
     )
 {
-    Column(modifier = modifier.fillMaxSize(),
+
+    Column(modifier = Modifier.fillMaxSize(),
+
         horizontalAlignment = Alignment.CenterHorizontally) {
         if (artworkId != null)  {
        Image(

@@ -1,13 +1,12 @@
 package com.turingalan.pokemon.ui.detail
 
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.turingalan.pokemon.data.model.Pokemon
 import com.turingalan.pokemon.data.repository.PokemonRepository
-import com.turingalan.pokemon.ui.Route
+import com.turingalan.pokemon.ui.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,12 +18,15 @@ data class DetailUiState(
     val name:String = "",
     val artworkId:Int? = null
 )
+
+
 @HiltViewModel
 class PokemonDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val pokemonRepository: PokemonRepository
 
 ): ViewModel() {
+
 
     private val _uiState: MutableStateFlow<DetailUiState> =
         MutableStateFlow(DetailUiState())
@@ -49,3 +51,4 @@ fun Pokemon.toDetailUiState(): DetailUiState = DetailUiState(
     name = this.name,
     artworkId = this.artworkId,
 )
+
