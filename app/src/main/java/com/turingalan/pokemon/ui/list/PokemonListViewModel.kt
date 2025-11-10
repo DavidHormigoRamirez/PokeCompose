@@ -1,39 +1,20 @@
 package com.turingalan.pokemon.ui.list
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.navigation.toRoute
+
+import androidx.lifecycle.viewModelScope
 import com.turingalan.pokemon.data.model.Pokemon
 import com.turingalan.pokemon.data.repository.PokemonRepository
-import com.turingalan.pokemon.ui.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+
+
 import javax.inject.Inject
 
-data class ListUiState(
-    val pokemons:List<ItemUiState> = listOf()
-)
-data class ItemUiState(
-    val id:Long,
-    val name:String,
-    val spriteId:Int,
-)
-
-fun Pokemon.asItemUiState(): ItemUiState {
-    return ItemUiState(
-        id = this.id,
-        name = this.name,
-        spriteId = this.spriteId
-    )
-}
-fun List<Pokemon>.asListUiState(): ListUiState {
-
-    val items = this.map { it.asItemUiState() }
-    return ListUiState(pokemons = items)
-}
 
 @HiltViewModel
 class PokemonListViewModel @Inject constructor(
@@ -42,14 +23,52 @@ class PokemonListViewModel @Inject constructor(
 ): ViewModel() {
 
 
-    private val _uiState: MutableStateFlow<ListUiState> = MutableStateFlow(ListUiState())
+    private val _uiState: MutableStateFlow<ListUiState > =
+        MutableStateFlow(value = ListUiState.Initial)
+
     val uiState: StateFlow<ListUiState>
         get() = _uiState.asStateFlow()
 
     init {
-        val pokemons = repository.readAll()
-        _uiState.value = pokemons.asListUiState().copy()
+        viewModelScope.launch {
+            _uiState.value = ListUiState.Loading
+            val allPokemon = repository.readAll()
+            val successResponse = ListUiState.Success(
+                allPokemon.asListUiState()
+            )
+
+            _uiState.value = successResponse
+        }
+
     }
 
-
 }
+
+sealed class ListUiState {
+    object Initial: ListUiState()
+    object Loading: ListUiState()
+    data class Success(
+        val pokemons: List<ListItemUiState>
+    ): ListUiState()
+}
+
+data class ListItemUiState(
+    val id: Long, // Aunque luego no aparezca en la UI
+    val name: String,
+    val spriteId:Int,
+)
+
+
+fun Pokemon.asListItemUiState(): ListItemUiState {
+
+    return ListItemUiState(
+        id = this.id,
+        name = this.name,
+        spriteId = this.spriteId
+    )
+}
+fun List<Pokemon>.asListUiState():List<ListItemUiState>
+= this.map(Pokemon::asListItemUiState)
+
+
+

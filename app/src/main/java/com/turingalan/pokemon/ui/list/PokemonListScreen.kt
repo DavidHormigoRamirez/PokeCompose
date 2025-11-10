@@ -5,77 +5,128 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
 
 @Composable
 fun PokemonListScreen(
     modifier: Modifier = Modifier,
-    onClick: (Long) -> Unit = {},
     viewModel: PokemonListViewModel = hiltViewModel(),
+    onShowDetail:(Long)->Unit,
 ) {
-    val state by viewModel.uiState.collectAsState()
-    LazyColumn(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-        contentPadding = PaddingValues(horizontal = 8.dp)
-    ){
-        items(
-            items=state.pokemons,
-            key = {
-                item -> item.id
-            }
-        ) {
-            pokemon ->
-            PokemonCard(
-                modifier = Modifier.fillMaxSize()
-                    .clickable(
-                        enabled = true,
-                        onClick = {
-                            onClick(pokemon.id)
-                        }
-                    ),
-                name = pokemon.name,
-                spriteId = pokemon.spriteId,
-            )
 
+    val uiState by viewModel.uiState.collectAsState()
+
+    when(uiState) {
+        is ListUiState.Initial -> {
+
+        }
+        is ListUiState.Loading -> {
+            PokemonLoadingScreen(modifier)
+        }
+        is ListUiState.Success -> {
+            PokemonList(modifier, uiState, onShowDetail)
         }
     }
 
 }
 
 @Composable
-fun PokemonCard(
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+private fun PokemonLoadingScreen(modifier: Modifier) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        LoadingIndicator(
+            modifier = Modifier.size(128.dp)
+        )
+    }
+}
+
+@Composable
+private fun PokemonList(
+    modifier: Modifier,
+    uiState: ListUiState,
+    onShowDetail: (Long) -> Unit
+) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(horizontal = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+
+    ) {
+        items(
+            items = (uiState as ListUiState.Success).pokemons,
+            key = { item ->
+                item.id
+            }
+        )
+        {
+            PokemonListItemCard(
+                pokemonId = it.id,
+                name = it.name,
+                spriteId = it.spriteId,
+                onShowDetail = onShowDetail
+            )
+        }
+    }
+}
+
+@Composable
+fun PokemonListItemCard(
+
     modifier:Modifier = Modifier,
+    pokemonId: Long,
     name:String,
     spriteId:Int,
+    onShowDetail: (Long) -> Unit,
 )
 {
-    Card(modifier = modifier) {
-        Column {
-            Image(painterResource(spriteId),name)
-            Text(
-                text=name,
-                style = MaterialTheme.typography.headlineSmall
-                )
+    Card(
+        modifier = Modifier.fillMaxWidth().height(128.dp)
+            .clickable(enabled = true,
+                onClick = {
+                    onShowDetail(pokemonId)
+                })
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            Image(
+                modifier = Modifier.size(64.dp),
+                contentScale = ContentScale.Fit,
+                painter=painterResource(spriteId),
+                contentDescription = name)
+            Text(text= name,
+                style = MaterialTheme.typography.headlineSmall)
         }
 
     }
-
 }

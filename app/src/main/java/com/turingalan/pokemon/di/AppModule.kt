@@ -1,5 +1,6 @@
 package com.turingalan.pokemon.di
 
+import com.turingalan.pokemon.data.repository.PokemonFakeRemoteRepository
 import com.turingalan.pokemon.data.repository.PokemonInMemoryRepository
 import com.turingalan.pokemon.data.repository.PokemonRepository
 import dagger.Binds
@@ -14,5 +15,6 @@ abstract class AppModule {
 
     @Binds
     @Singleton
-    abstract fun bindPokemonRepository(repository: PokemonInMemoryRepository): PokemonRepository
+    abstract fun bindPokemonRepository(repository: PokemonFakeRemoteRepository): PokemonRepository
+    //abstract fun bindPokemonRepository(repository: PokemonInMemoryRepository): PokemonRepository
 }

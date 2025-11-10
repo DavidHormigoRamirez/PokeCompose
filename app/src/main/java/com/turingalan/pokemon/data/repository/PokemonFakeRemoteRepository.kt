@@ -2,9 +2,10 @@ package com.turingalan.pokemon.data.repository
 
 import com.turingalan.pokemon.R
 import com.turingalan.pokemon.data.model.Pokemon
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
-class PokemonInMemoryRepository @Inject constructor(): PokemonRepository {
+class PokemonFakeRemoteRepository @Inject constructor(): PokemonRepository {
 
     private val pokemonList: List<Pokemon> = listOf(
         Pokemon(
@@ -60,11 +61,16 @@ class PokemonInMemoryRepository @Inject constructor(): PokemonRepository {
     )
 
     override suspend fun readOne(id: Long): Pokemon? {
+        delay(1000L)
         val pokemon = pokemonList.firstOrNull() {
             p -> p.id == id
         }
         return pokemon
     }
 
-    override suspend fun readAll(): List<Pokemon> = this.pokemonList
+    override suspend fun readAll(): List<Pokemon> {
+        delay(3000L)
+        return this.pokemonList
+
+    }
 }
